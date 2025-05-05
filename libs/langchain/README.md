@@ -89,3 +89,18 @@ For more information on these concepts, please see our [full documentation](http
 As an open-source project in a rapidly developing field, we are extremely open to contributions, whether it be in the form of a new feature, improved infrastructure, or better documentation.
 
 For detailed information on how to contribute, see the [Contributing Guide](https://python.langchain.com/docs/contributing/).
+
+
+# Encryption Integration
+
+## Datasets
+-  https://rajpurkar.github.io/SQuAD-explorer/
+-  https://www.kaggle.com/code/lakshmi25npathi/sentiment-analysis-of-imdb-movie-reviews
+-  https://pilehvar.github.io/wic/
+-  https://sh-tsang.medium.com/review-superglue-a-stickier-benchmark-for-general-purpose-language-understanding-systems-ddb21d7c0848
+-  https://github.com/google-research-datasets/boolean-questions
+-  https://github.com/egozverev/Should-It-Be-Executed-Or-Processed
+-  https://paper.hackaprompt.com/
+-  https://github.com/gururise/AlpacaDataCleaned
+-  https://github.com/tatsu-lab/stanford_alpaca/blob/main/alpaca_data.json
+-  https://huggingface.co/datasets/Lakera/gandalf_summarization
