@@ -187,3 +187,10 @@ virtualenv/
 .venv
 .github/workflows
 .github/actions
+
+#Mine
+evaluation.csv
+plain_evaluation.csv
+results/evaluation/~$evaluation_models.xlsx
+scripts/exported_data.json
+scripts/prompts.json
