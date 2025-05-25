@@ -1,8 +1,7 @@
 from langchain_ollama import OllamaLLM
 from langchain_openai import OpenAI
 # from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts.encrypted_prompt import EncryptedPromptTemplate
-from langchain.chains.encrypted_chains import EncryptedInputChain
+from langchain.prompts.encrypted_prompt import BasicPromptTemplate
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 from langchain.memory.encrypted_memory import EncryptedMemory
@@ -12,8 +11,8 @@ import json, csv
 
 combined_prompt = ""
 
-if "OPENAI_API_KEY" not in os.environ:
-    os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter your OpenAI API key: ")
+# if "OPENAI_API_KEY" not in os.environ:
+#     os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter your OpenAI API key: ")
 
 # OPENAI_ORGANIZATION = getpass()
 
@@ -21,16 +20,15 @@ if "OPENAI_API_KEY" not in os.environ:
 
 # llm = ChatGoogleGenerativeAI(model="gemini-pro")
 # llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
-llm = OllamaLLM(model="llama4")#, temperature=0.6)
+llm = OllamaLLM(model="gemma3")#, temperature=0.6)
 memory = ConversationBufferMemory(
                         input_key="user_input",
                         memory_key="chat_history", 
                         return_messages=False
                         )
 
-prompt_template = EncryptedPromptTemplate(input_variables=["dev_instructions","user_input","chat_history"])
+prompt_template = BasicPromptTemplate(input_variables=["dev_instructions","user_input","chat_history"])
 
-# chain = EncryptedInputChain(llm=llm, prompt_template=prompt_template)
 chain = LLMChain( # deprecated, will be removed in version==1.0
     llm=llm,
     prompt=prompt_template,
@@ -52,7 +50,7 @@ dev_instructions="""
     Avoid discussing topics unrelated to the store or shopping.
 """
 # Write to CSV file
-with open("evaluation.csv", "w", newline='', encoding="utf-8") as csvfile:
+with open("plain_evaluation.csv", "w", newline='', encoding="utf-8") as csvfile:
     fieldnames = ["name", "system_prompt", "input_example", "llm_output"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -65,7 +63,7 @@ with open("evaluation.csv", "w", newline='', encoding="utf-8") as csvfile:
         input_example = entry.get("input_example", "")
         combined_prompt = f"{system_prompt}\n\nInput:\n{input_example}"
 
-        for i in range(4):
+        for i in range(3):
             output = chain.run(dev_instructions=dev_instructions,user_input=f"{combined_prompt}")
             print(output)
             writer.writerow({
@@ -81,7 +79,7 @@ with open("evaluation.csv", "w", newline='', encoding="utf-8") as csvfile:
         input_example = entry.get("input_example", "")
         combined_prompt = f"{system_prompt}\n\nInput:\n{input_example}"
 
-        for i in range(4):
+        for i in range(3):
             output = chain.run(dev_instructions=dev_instructions,user_input=f"{combined_prompt}")
             print(output)
             writer.writerow({
