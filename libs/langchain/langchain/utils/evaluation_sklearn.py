@@ -14,9 +14,9 @@ for model, mode in product(models, modes):
     y_pred = df.Status_total.dropna()
 
     accuracy = metrics.accuracy_score(y_true, y_pred)   # Accuracy = (TP + TN) / total
-    precision = metrics.precision_score(y_true, y_pred, labels=['TB','UA','FO','SA'], average="micro") # Precision = TP / (TP + FP)
-    recall = metrics.recall_score(y_true, y_pred, labels=['TB','UA','FO','SA'], average="micro")       # Recall = TP / (TP + FN)
-    f1_score = metrics.f1_score(y_true, y_pred, labels=['TB','UA','FO','SA'], average="micro")
+    precision = metrics.precision_score(y_true, y_pred, labels=['TB','UA','FO','SA'], average="macro", zero_division=0) # Precision = TP / (TP + FP)
+    recall = metrics.recall_score(y_true, y_pred, labels=['TB','UA','FO','SA'], average="macro", zero_division=0)       # Recall = TP / (TP + FN)
+    f1_score = metrics.f1_score(y_true, y_pred, labels=['TB','UA','FO','SA'], average="macro", zero_division=0)
     confusion_matrix = metrics.confusion_matrix(y_true, y_pred, labels=['TB','UA','FO','SA'])
     # confusion_matrix_display = metrics.ConfusionMatrixDisplay(confusion_matrix, display_labels=['TB','UA','FO','SA'])
     

@@ -1,6 +1,5 @@
 from langchain_ollama import OllamaLLM
 from langchain_openai import OpenAI
-# from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts.encrypted_prompt import EncryptedPromptTemplate
 from langchain.chains.encrypted_chains import EncryptedInputChain
 from langchain.chains import LLMChain
@@ -19,9 +18,8 @@ if "OPENAI_API_KEY" not in os.environ:
 
 # os.environ["OPENAI_ORGANIZATION"] = OPENAI_ORGANIZATION
 
-# llm = ChatGoogleGenerativeAI(model="gemini-pro")
 # llm = OpenAI(model_name="gpt-3.5-turbo-instruct")
-llm = OllamaLLM(model="llama4")#, temperature=0.6)
+llm = OllamaLLM(model="falcon3")#, temperature=0.6)
 memory = ConversationBufferMemory(
                         input_key="user_input",
                         memory_key="chat_history", 
