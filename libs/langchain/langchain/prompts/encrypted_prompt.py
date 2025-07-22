@@ -1,4 +1,3 @@
-from langchain_core.prompts.prompt import PromptTemplate
 from langchain_core.prompts.base import BasePromptTemplate
 from langchain_core.prompts.chat import ChatPromptValue
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -21,13 +20,6 @@ Ones you have processed the instruction, return the answer in the following JSON
 LLM: {"Type": "ANSWER", "Data" : <AnswerDATA>}
 """
 )
-### input
-### response
-        # Below you are provided with an example of the full transcript where your responses start with "LLM":
-        # User: {"Type": "ENCRYPTED", "Data": b'\x1e\x99_\x11\xb1{\x8b)\xd5;$\x1d4\x8e\xc5A\xe5B\xff;JL\x97\x0e\x16UKsg\x00\rSK\xa59\xcf(L\xd6I#\xfe4\x80x\xa5\xb0\x9d\xf0\x99\xd9\x85.7\x1d:\xea|\x07\xb1\xf5\xbb?\xe6\xf3\x8bE9T\xf3\xc1\xfb\x03\xdb\xf7\xd5f\xe5'}
-        # LLM: {"Type": "TO-DECRYPT", "Data": b'\x1e\x99_\x11\xb1{\x8b)\xd5;$\x1d4\x8e\xc5A\xe5B\xff;JL\x97\x0e\x16UKsg\x00\rSK\xa59\xcf(L\xd6I#\xfe4\x80x\xa5\xb0\x9d\xf0\x99\xd9\x85.7\x1d:\xea|\x07\xb1\xf5\xbb?\xe6\xf3\x8bE9T\xf3\xc1\xfb\x03\xdb\xf7\xd5f\xe5'}
-        # Tool: {"Type": "DECRYPTED", "Data": "Please translate to english: \"HOLA!\""}
-        # LLM: {"Type": "ANSWER", "Data" : "HELLO!"}
 
 class EncryptedPromptTemplate(BasePromptTemplate):
     input_variables: List[str]

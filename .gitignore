@@ -194,3 +194,10 @@ plain_evaluation.csv
 results/evaluation/~$evaluation_models.xlsx
 scripts/exported_data.json
 scripts/prompts.json
+evaluation.xlsx
+results/
+../../scripts/refined_realistic_prompts.json
+requirements.txt
+llm-evaluation.csv
+llm-evaluation.xlsx
+scripts/refined_realistic_prompts.json
