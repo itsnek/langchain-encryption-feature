@@ -1,19 +1,23 @@
+import sys
 from sklearn import metrics
 import pandas as pd
 from itertools import product
 from llm_as_a_judge import evaluate_responses_plain, evaluate_responses_encrypted
-import csv
+import csv,re
 
-models = ["mistral", "llama", "openai", "gemma3", "falcon3"]
+models = ["mistral"]#"mistral", "llama3.2", "gemma3"] #, "falcon3" "openai",
 modes = ["plain", "encrypted"]
-xlsx_file = "../../results/evaluation/evaluation_models.xlsx"
+# xlsx_file = "../../results/evaluation/evaluation_models.xlsx"
+xlsx_file = "./results/results.xlsx"
+# xlsx_file = sys.argv[1]
 
-with pd.ExcelWriter("llm-evaluation.xlsx", engine="openpyxl") as writer:
+
+with pd.ExcelWriter("../../results/evaluation/llm-evaluation.xlsx", engine="openpyxl") as writer:
     for model, mode in product(models, modes):
         df = pd.read_excel(xlsx_file, sheet_name=f'{model}_{mode}')
 
-        y_true = ["TB"] * 10 + ["UA"] * 10
-        y_pred = df.Status_total.dropna()
+        # y_true = ["TB"] * 10 + ["UA"] * 10
+        # y_pred = df.Status_total.dropna()
 
         # accuracy = metrics.accuracy_score(y_true, y_pred)   # Accuracy = (TP + TN) / total
         # precision = metrics.precision_score(y_true, y_pred, labels=['TB','UA','FO','SA'], average="macro", zero_division=0) # Precision = TP / (TP + FP)
@@ -25,7 +29,7 @@ with pd.ExcelWriter("llm-evaluation.xlsx", engine="openpyxl") as writer:
         # tb,fo,ua,sa = (0,0,0,0)
         # for entry in y_pred:
         #     if entry == "UA":
-        #         ua += 1 
+        #         ua += 1
         #     elif entry == "SA":
         #         sa += 1
         #     elif entry == "TB":
@@ -75,15 +79,15 @@ with pd.ExcelWriter("llm-evaluation.xlsx", engine="openpyxl") as writer:
 
         if mode == "encrypted":
             while i < len(outputs) and i + 3 < len(outputs):
-                status = evaluate_responses_encrypted(tasks[i], outputs[i], outputs[i+1], outputs[i+2], outputs[i+3])
+                status = evaluate_responses_encrypted(tasks[i], outputs.iloc[i], outputs.iloc[i+1], outputs.iloc[i+2], outputs.iloc[i+3])
                 records.append({"task": f"{tasks[i]}", "Status": status})
                 i += 4
         else:
             while i < len(outputs) and i + 2 < len(outputs):
-                status = evaluate_responses_plain(tasks[i], outputs[i], outputs[i+1], outputs[i+2])
+                status = evaluate_responses_plain(tasks[i], outputs.iloc[i], outputs.iloc[i+1], outputs.iloc[i+2])
                 records.append({"task": f"{tasks[i]}", "Status": status})
                 i += 3
 
         # Convert to DataFrame and write to Excel
         df = pd.DataFrame(records)
-        df.to_excel(writer, sheet_name=f'{model}_{mode}  ' ,index=False)
+        df.to_excel(writer, sheet_name=f'{model}_{mode}' ,index=False)

@@ -2,8 +2,7 @@ from langchain_core.prompts.base import BasePromptTemplate
 from langchain_core.prompts.chat import ChatPromptValue
 from langchain_core.messages import HumanMessage, SystemMessage
 from typing import List, Any
-from langchain.utils.encryption import encrypt
-import base64
+from libs.langchain.langchain.utils.encryption import encrypt
 
 SYSTEM_INSTRUCTIONS = (
 """
