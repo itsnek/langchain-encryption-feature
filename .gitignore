@@ -168,12 +168,10 @@ virtualenv/
 #Mine
 evaluation.csv
 plain_evaluation.csv
-results/evaluation/~$evaluation_models.xlsx
 scripts
 evaluation.xlsx
 results/
 ../../scripts/refined_realistic_prompts.json
-requirements.txt
 llm-evaluation.csv
 llm-evaluation.xlsx
 libs/langchain/scripts/refined_realistic_prompts.json

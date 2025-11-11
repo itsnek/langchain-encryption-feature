@@ -1,8 +1,8 @@
 from langchain_ollama import OllamaLLM,ChatOllama
 from langchain_openai import OpenAI,ChatOpenAI
-from libs.langchain.langchain.prompts.encrypted_prompt import BasicPromptTemplate
-from libs.langchain.langchain.chains import LLMChain
-from libs.langchain.langchain.memory import ConversationBufferMemory
+from langchain_classic.prompts.encrypted_prompt import BasicPromptTemplate
+from langchain_classic.chains import LLMChain
+from langchain_classic.memory import ConversationBufferMemory
 # from langchain_core.output_parsers import StrOutputParser
 # from libs.core.langchain_core.runnables import RunnableSequence
 import getpass
@@ -25,12 +25,11 @@ dev_instructions="""
 ### HELPERS ###
 def prepare(model):
     global memory, chain
-    if model == "gpt-3.5-turbo-instruct" and "OPENAI_API_KEY" not in os.environ:
-        os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter your OpenAI API key: ")
+    if model == "gpt-3.5-turbo":
+        if "OPENAI_API_KEY" not in os.environ:
+            os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter your OpenAI API key: ")
         llm = ChatOpenAI(
-                base_url="http://host.docker.internal:11434",
-                model_name="gpt-3.5-turbo-instruct",
-                streaming=False
+                model_name="gpt-3.5-turbo",
                 )
     else:
         llm = ChatOllama(
@@ -88,28 +87,27 @@ async def process_all():
 
 ### MAIN ###
 combined_prompt = ""
-models = [sys.argv[1]] #["mistral", "llama3.2", "gemma3", "falcon3"]# "gpt-3.5-turbo-instruct"]
+model = sys.argv[1] #["mistral", "llama3.2", "gemma3", "falcon3"]# "gpt-3.5-turbo"]
 wb = Workbook()
 headers = ["name", "system_prompt", "input_example", "llm_output"]
 
-for i,model in enumerate(models):
-    # Prepare request
-    prepare(model)
+# Prepare request
+prepare(model)
 
-    # Load JSON data from a file
-    with open("libs/langchain/scripts/medium_data.json", "r") as f:
-        data = json.load(f)
+# Load JSON data from a file
+with open("libs/langchain/scripts/medium_data.json", "r") as f:
+    data = json.load(f)
 
-    ws = wb.active if i == 0 else wb.create_sheet()
-    ws.title = f'{model}_plain'
+ws = wb.active
+ws.title = f'{model}_plain'
 
-    # Define headers and write them to the first row
-    ws.append(headers)
+# Define headers and write them to the first row
+ws.append(headers)
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(process_all())
-    loop.close()
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+loop.run_until_complete(process_all())
+loop.close()
 
-    # Save the workbook to a file
-    wb.save(f'libs/langchain/results/plain/plain_results_{model}.xlsx')
+# Save the workbook to a file
+wb.save(f'libs/langchain/results/plain/plain_results_{model}.xlsx')

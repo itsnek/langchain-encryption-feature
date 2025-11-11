@@ -1,0 +1,10 @@
+langchain
+langchain-ollama
+langchain-openai
+pycryptodome
+langchain-text-splitters
+scikit-learn
+pandas
+openpyxl
+ollama
+xlsxwriter

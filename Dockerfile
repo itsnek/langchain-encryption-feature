@@ -6,7 +6,7 @@ WORKDIR /src
 
 COPY . /src
 
-ENV PYTHONPATH="/src"
+ENV PYTHONPATH="/src/libs/langchain"
 
 # Install dependencies
 RUN pip install --no-cache-dir -r /src/libs/langchain/requirements.txt

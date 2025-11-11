@@ -1,8 +1,8 @@
 from langchain_ollama import ChatOllama
 import ollama
 
-from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
+from langchain_classic.prompts import PromptTemplate
+from langchain_classic.chains import LLMChain
 
 instructions= """
 You are a helpful and unbiased judge. Your job is to evaluate responses of an LLM for specific task and decide which one is better based on {criteria}.
@@ -145,4 +145,4 @@ def evaluate_responses_encrypted(task, response_a, response_b, response_c, respo
 
     return response
 
-    return response['message']['content'].strip()
+    # return response['message']['content'].strip()

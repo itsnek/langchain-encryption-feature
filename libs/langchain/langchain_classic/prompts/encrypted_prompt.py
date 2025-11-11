@@ -1,8 +1,9 @@
 from langchain_core.prompts.base import BasePromptTemplate
-from langchain_core.prompts.chat import ChatPromptValue
+from langchain_core.prompt_values import ChatPromptValue
 from langchain_core.messages import HumanMessage, SystemMessage
-from typing import List, Any
-from libs.langchain.langchain.utils.encryption import encrypt
+from typing import ClassVar, List, Any
+from langchain_classic.utils.encryption import encrypt
+import operator as op
 
 SYSTEM_INSTRUCTIONS = (
 """
@@ -17,25 +18,32 @@ Please process the instruction found in the user data, the format of the second 
 Tool: {"Type": "DECRYPTED", "Data": <DecryptedDATA>}
 Ones you have processed the instruction, return the answer in the following JSON format: \
 LLM: {"Type": "ANSWER", "Data" : <AnswerDATA>}
+DON'T GIVE REASONING OR EXPLAIN YOUR WAY OF THINKING. Just print the answers using the format indicated for LLM, "LLM: {...}"
+User, Tool and LLM is only present in the examples to help you understand from whom does the response come. Don't include them in the answer.
 """
 )
 
+# Below you are provided with an example of the full transcript where your responses start with "LLM":
+# User: {"Type": "ENCRYPTED", "Data": <DATA>}     ### <DATA> is of format b'...'
+# LLM: {"Type": "TO-DECRYPT", "Data": <DATA>}     ### <DATA> is of format b'...'
+# Tool: {"Type": "DECRYPTED", "Data": "Please translate to english: \"HOLA!\""}
+# LLM: {"Type": "ANSWER", "Data" : "HELLO!"}
 class EncryptedPromptTemplate(BasePromptTemplate):
     input_variables: List[str]
+    _set_chat_history = ""
 
     def format(self, **kwargs: Any) -> str:
         user_input = kwargs.get("user_input", "")
-        encrypted = encrypt(user_input)
-
-        return encrypted
+        return encrypt(user_input)
 
     def format_prompt(self, **kwargs: Any) -> ChatPromptValue:
         dev_instructions = kwargs.get("dev_instructions", "")
         user_input = kwargs.get("user_input", "")
         chat_history = kwargs.get("chat_history", "")
-        encrypted = (
-            user_input if user_input.startswith("{\"decrypted_text\":")
-            else encrypt(user_input)
+        index = kwargs.get("index", 0)
+        user_input = (
+            encrypt(user_input) if index==0
+            else user_input
         )
 
         if dev_instructions == "":
@@ -48,14 +56,17 @@ class EncryptedPromptTemplate(BasePromptTemplate):
             )
 
         human_content = ("")
+        # print("CHAT_HISTORY_BEFORE: ", chat_history)
+        # print("####")
         if chat_history == "":
             human_content = (
-                f'User: {{"Type": "ENCRYPTED", "Data": "{str(encrypted)}"}}'
+                f'{{"Type": "ENCRYPTED", "Data": "{str(user_input)}"}}'
             )
-        else:
+        elif op.contains(chat_history,"TO-DECRYPT"):
             human_content = (
-                f'Tool: {{"Type": "DECRYPTED", "Data": "{user_input}"}}'
+                f'{{"Type": "DECRYPTED", "Data": "{user_input}"}}'
             )
+
         system_message = SystemMessage(content=system_content)
         user_message = HumanMessage(content=human_content)
 

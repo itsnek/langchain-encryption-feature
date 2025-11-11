@@ -51,6 +51,16 @@ services:
     profiles:
       - plain
 
+  plain_openai:
+    extends:
+      service: base_app
+    container_name: plain_openai
+    command: ["libs/langchain/tests/unit_tests/examples/input_chain_example.py", "gpt-3.5-turbo"]
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    profiles:
+      - plain
+
   encrypted_mistral:
     extends:
       service: base_app
@@ -83,34 +93,28 @@ services:
     profiles:
       - encrypted
 
-  judge_mistral:
+  encrypted_openai:
     extends:
       service: base_app
-    container_name: judge_mistral
-    command: ["libs/langchain/langchain/utils/evaluation_sklearn.py", "results/plain/mistral_plain.xlsx"]
+    container_name: encrypted_openai
+    command: ["libs/langchain/tests/unit_tests/examples/encrypted_input_chain_example.py", "gpt-3.5-turbo"]
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    profiles:
+      - encrypted
+
+  judge_plain:
+    extends:
+      service: base_app
+    container_name: judge_plain
+    command: ["libs/langchain/langchain_classic/utils/evaluation_sklearn.py", "plain"]
     profiles:
       - judge
 
-  judge_llama3.2:
+  judge_encrypted:
     extends:
       service: base_app
-    container_name: judge_llama3.2
-    command: ["libs/langchain/langchain/utils/evaluation_sklearn.py", "results/plain/llama3.2_plain.xlsx"]
-    profiles:
-      - judge
-
-  judge_gemma3:
-    extends:
-      service: base_app
-    container_name: judge_gemma3
-    command: ["libs/langchain/langchain/utils/evaluation_sklearn.py", "results/plain/gemma3_plain.xlsx"]
-    profiles:
-      - judge
-
-  judge_falcon3:
-    extends:
-      service: base_app
-    container_name: judge_falcon3
-    command: ["libs/langchain/langchain/utils/evaluation_sklearn.py", "results/plain/falcon3_plain.xlsx"]
+    container_name: judge_encrypted
+    command: ["libs/langchain/langchain_classic/utils/evaluation_sklearn.py", "encrypted"]
     profiles:
       - judge
