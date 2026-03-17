@@ -23,7 +23,7 @@ services:
     extends:
       service: base_app
     container_name: plain_mistral
-    command: ["libs/langchain/tests/unit_tests/examples/input_chain_example.py", "mistral"]
+    command: ["tests/unit_tests/examples/input_chain_example.py", "mistral"]
     profiles:
       - plain
 
@@ -31,7 +31,7 @@ services:
     extends:
       service: base_app
     container_name: plain_llama3.2
-    command: ["libs/langchain/tests/unit_tests/examples/input_chain_example.py", "llama3.2"]
+    command: ["tests/unit_tests/examples/input_chain_example.py", "llama3.2"]
     profiles:
       - plain
 
@@ -39,7 +39,7 @@ services:
     extends:
       service: base_app
     container_name: plain_gemma3
-    command: ["libs/langchain/tests/unit_tests/examples/input_chain_example.py", "gemma3"]
+    command: ["tests/unit_tests/examples/input_chain_example.py", "gemma3"]
     profiles:
       - plain
 
@@ -47,7 +47,7 @@ services:
     extends:
       service: base_app
     container_name: plain_falcon3
-    command: ["libs/langchain/tests/unit_tests/examples/input_chain_example.py", "falcon3"]
+    command: ["tests/unit_tests/examples/input_chain_example.py", "falcon3"]
     profiles:
       - plain
 
@@ -55,7 +55,7 @@ services:
     extends:
       service: base_app
     container_name: plain_openai
-    command: ["libs/langchain/tests/unit_tests/examples/input_chain_example.py", "gpt-3.5-turbo"]
+    command: ["tests/unit_tests/examples/input_chain_example.py", "gpt-3.5-turbo"]
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     profiles:
@@ -65,7 +65,7 @@ services:
     extends:
       service: base_app
     container_name: encrypted_mistral
-    command: ["libs/langchain/tests/unit_tests/examples/encrypted_input_chain_example.py", "mistral"]
+    command: ["tests/unit_tests/examples/encrypted_input_chain_example.py", "mistral"]
     profiles:
       - encrypted
 
@@ -73,7 +73,7 @@ services:
     extends:
       service: base_app
     container_name: encrypted_llama3.2
-    command: ["libs/langchain/tests/unit_tests/examples/encrypted_input_chain_example.py", "llama3.2"]
+    command: ["tests/unit_tests/examples/encrypted_input_chain_example.py", "llama3.2"]
     profiles:
       - encrypted
 
@@ -81,7 +81,7 @@ services:
     extends:
       service: base_app
     container_name: encrypted_gemma3
-    command: ["libs/langchain/tests/unit_tests/examples/encrypted_input_chain_example.py", "gemma3"]
+    command: ["tests/unit_tests/examples/encrypted_input_chain_example.py", "gemma3"]
     profiles:
       - encrypted
 
@@ -89,7 +89,7 @@ services:
     extends:
       service: base_app
     container_name: encrypted_falcon3
-    command: ["libs/langchain/tests/unit_tests/examples/encrypted_input_chain_example.py", "falcon3"]
+    command: ["tests/unit_tests/examples/encrypted_input_chain_example.py", "falcon3"]
     profiles:
       - encrypted
 
@@ -97,7 +97,7 @@ services:
     extends:
       service: base_app
     container_name: encrypted_openai
-    command: ["libs/langchain/tests/unit_tests/examples/encrypted_input_chain_example.py", "gpt-3.5-turbo"]
+    command: ["tests/unit_tests/examples/encrypted_input_chain_example.py", "gpt-3.5-turbo"]
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
     profiles:
@@ -107,7 +107,7 @@ services:
     extends:
       service: base_app
     container_name: judge_plain
-    command: ["libs/langchain/langchain_classic/utils/evaluation_sklearn.py", "plain"]
+    command: ["langchain_classic/utils/evaluation_sklearn.py", "plain"]
     profiles:
       - judge
 
@@ -115,6 +115,6 @@ services:
     extends:
       service: base_app
     container_name: judge_encrypted
-    command: ["libs/langchain/langchain_classic/utils/evaluation_sklearn.py", "encrypted"]
+    command: ["langchain_classic/utils/evaluation_sklearn.py", "encrypted"]
     profiles:
       - judge

@@ -86,28 +86,29 @@ async def process_all():
     except Exception as e: print(e)
 
 ### MAIN ###
-combined_prompt = ""
-model = sys.argv[1] #["mistral", "llama3.2", "gemma3", "falcon3"]# "gpt-3.5-turbo"]
-wb = Workbook()
-headers = ["name", "system_prompt", "input_example", "llm_output"]
+if __name__ == "__main__":
+    combined_prompt = ""
+    model = sys.argv[1] #["mistral", "llama3.2", "gemma3", "falcon3"]# "gpt-3.5-turbo"]
+    wb = Workbook()
+    headers = ["name", "system_prompt", "input_example", "llm_output"]
 
-# Prepare request
-prepare(model)
+    # Prepare request
+    prepare(model)
 
-# Load JSON data from a file
-with open("libs/langchain/scripts/medium_data.json", "r") as f:
-    data = json.load(f)
+    # Load JSON data from a file
+    with open("scripts/medium_data.json", "r") as f:
+        data = json.load(f)
 
-ws = wb.active
-ws.title = f'{model}_plain'
+    ws = wb.active
+    ws.title = f'{model}_plain'
 
-# Define headers and write them to the first row
-ws.append(headers)
+    # Define headers and write them to the first row
+    ws.append(headers)
 
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
-loop.run_until_complete(process_all())
-loop.close()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(process_all())
+    loop.close()
 
-# Save the workbook to a file
-wb.save(f'libs/langchain/results/plain/plain_results_{model}.xlsx')
+    # Save the workbook to a file
+    wb.save(f'results/plain/plain_results_{model}.xlsx')
