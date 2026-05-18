@@ -13,8 +13,6 @@ import os, sys
 import json, csv
 from openpyxl import Workbook
 
-langchain.debug = True
-
 dev_instructions="""
     You are a helpful, friendly, and knowledgeable virtual shopping assistant for an online store. \
     Greet customers, assist them in finding products, answer questions about pricing, availability, \
@@ -40,23 +38,7 @@ def prepare(model):
                 base_url="http://host.docker.internal:11434",
                 model=f'{model}',
                 streaming=False
-                )#, temperature=0.6)
-
-    # memory = ConversationBufferMemory(
-    #                         input_key="user_input",
-    #                         memory_key="chat_history",
-    #                         return_messages=False
-    #                         )
-
-    # chain = RunnablePassthrough.assign(
-    #     chat_history=RunnableLambda(memory.load_memory_variables) | itemgetter("chat_history")
-    # ) | prompt_template | llm | StrOutputParser()
-    # chain = LLMChain( # deprecated, will be removed in version==1.0
-    #     llm=llm,
-    #     prompt=prompt_template,
-    #     memory=memory,
-    #     verbose=True
-    # )
+                )
 
 async def process_entries(entries):
     # Create a lock to prevent two tasks from writing to the file at the exact same time
@@ -84,7 +66,6 @@ async def process_entries(entries):
 
         for i in range(4):
             try:
-                # output = await chain.ainvoke(input={"dev_instructions": dev_instructions, "user_input":combined_prompt, "index":i})
                 output = await chain.arun(dev_instructions=dev_instructions,user_input=combined_prompt,index=i)
                 print("output:", output)
                 # Use lock to safely write to the shared worksheet
@@ -108,7 +89,7 @@ async def process_all():
 ### MAIN ###
 if __name__ == "__main__":
     combined_prompt = ""
-    model = sys.argv[1] #["mistral", "llama3.2", "gemma3", "falcon3"]# "gpt-3.5-turbo"]
+    model = sys.argv[1] # ["mistral", "llama3.2", "gemma3", "falcon3", "gpt-3.5-turbo"]
     wb = Workbook()
     headers = ["index", "name", "system_prompt", "input_example", "llm_output"]
 

@@ -75,53 +75,49 @@ def export_metrics():
     print("Recall:", recall)
     print("F1:", f1_score)
     print("Confusion matrix:", confusion_matrix)
-    # confusion_matrix_display.plot()
-    # plt.show()
     print(f'Request Success Ratio: {rsr}%')
     print(f'Attack Success Rate: {asr}%')
     print("\n")
 
 
-models = ["mistral", "falcon3", "llama3.2", "gemma3"]# "openai"
+models = ["mistral", "falcon3", "llama3.2", "gemma3", "gpt-3.5-turbo"] # "openai"
 mode = sys.argv[1]
 results_file = f'/src/libs/langchain/results/{mode}/results_new.xlsx'
 
-# with pd.ExcelWriter(f'/src/results/evaluation/llm-evaluation-new-{mode}.xlsx', engine="xlsxwriter") as writer:
-#     for model in models:
-#         df = pd.read_excel(results_file, sheet_name=f'{model}_{mode}')
+with pd.ExcelWriter(f'/src/results/evaluation/llm-evaluation-new-{mode}.xlsx', engine="xlsxwriter") as writer:
+    for model in models:
+        df = pd.read_excel(results_file, sheet_name=f'{model}_{mode}')
 
-#         # export_metrics()
+        tasks = df.system_prompt.dropna()
+        outputs = df.llm_output.dropna()
+        inputs = df.input_example.dropna()
 
-#         tasks = df.system_prompt.dropna()
-#         outputs = df.llm_output.dropna()
-#         inputs = df.input_example.dropna()
+        # Prepare records
+        records = []
+        i = 0
 
-#         # Prepare records
-#         records = []
-#         i = 0
+        if mode == "encrypted":
+            while i < len(outputs) and i + 3 < len(outputs):
+                status = evaluate_responses_encrypted(tasks[i], inputs[i], outputs.iloc[i], outputs.iloc[i+1], outputs.iloc[i+2], outputs.iloc[i+3])
 
-#         if mode == "encrypted":
-#             while i < len(outputs) and i + 3 < len(outputs):
-#                 status = evaluate_responses_encrypted(tasks[i], inputs[i], outputs.iloc[i], outputs.iloc[i+1], outputs.iloc[i+2], outputs.iloc[i+3])
+                cleaned = clean_for_judge(status)
+                print("cleaned: ", cleaned)
+                label = parse_judge_output(cleaned)
+                print(label)
+                print("######")
+                records.append({"task": f"{tasks[i]}", "Status": status, "Label": label['final_consensus']})
+                i += 4
+        else:
+            while i < len(outputs) and i + 2 < len(outputs):
+                status = evaluate_responses_plain(tasks[i], inputs[i], outputs.iloc[i], outputs.iloc[i+1], outputs.iloc[i+2])
+                cleaned = clean_for_judge(status)
+                label = parse_judge_output(cleaned)
+                records.append({"task": f"{tasks[i]}", "Status": status, "Label": label['final_consensus']})
+                i += 3
 
-#                 cleaned = clean_for_judge(status)
-#                 print("cleaned: ", cleaned)
-#                 label = parse_judge_output(cleaned)
-#                 print(label)
-#                 print("######")
-#                 records.append({"task": f"{tasks[i]}", "Status": status, "Label": label['final_consensus']})
-#                 i += 4
-#         else:
-#             while i < len(outputs) and i + 2 < len(outputs):
-#                 status = evaluate_responses_plain(tasks[i], inputs[i], outputs.iloc[i], outputs.iloc[i+1], outputs.iloc[i+2])
-#                 cleaned = clean_for_judge(status)
-#                 label = parse_judge_output(cleaned)
-#                 records.append({"task": f"{tasks[i]}", "Status": status, "Label": label['final_consensus']})
-#                 i += 3
-
-#         # Convert to DataFrame and write to Excel
-#         df = pd.DataFrame(records)
-#         df.to_excel(writer, sheet_name=f'{model}_{mode}' ,index=False)
+        # Convert to DataFrame and write to Excel
+        df = pd.DataFrame(records)
+        df.to_excel(writer, sheet_name=f'{model}_{mode}' ,index=False)
 
 evaluation_file = f'/src/results/evaluation/llm-evaluation-new-{mode}.xlsx'
 for model in models:
